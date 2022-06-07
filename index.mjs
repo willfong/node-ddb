@@ -11,9 +11,16 @@ const message = {
 	email,
 };
 
-await putItem(TABLE_NAME, message);
+const putResult = await putItem(TABLE_NAME, message);
+if (putResult) console.log(`Successfully inserted: ${message}`);
 
+console.log("Listing all records...");
 const args = {
 	ProjectionExpression: "createdAt, messageId, email",
 };
-await scanTable(TABLE_NAME, args);
+const results = await scanTable(TABLE_NAME, args);
+const rightNow = Date.now();
+for (let result of results) {
+	const timeAgo = (rightNow - result.createdAt) / 1000;
+	console.log(`[${result.messageId}] ${result.email}\t\t(${timeAgo} seconds)`);
+}

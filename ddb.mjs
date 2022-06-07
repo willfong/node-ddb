@@ -21,7 +21,6 @@ const unmarshallOptions = {
 };
 
 const translateConfig = { marshallOptions, unmarshallOptions };
-
 const ddbDocClient = DynamoDBDocumentClient.from(ddbClient, translateConfig);
 
 // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.WriteItem.html
@@ -29,7 +28,7 @@ export const putItem = async (TableName, Item) => {
 	const params = { TableName, Item };
 	try {
 		const data = await ddbDocClient.send(new PutCommand(params));
-		console.log("Success - item added or updated", data);
+		return data;
 	} catch (err) {
 		console.log("Error", err.stack);
 	}
@@ -40,7 +39,7 @@ export const getItem = async (TableName, Key) => {
 	const params = { TableName, Key };
 	try {
 		const data = await ddbDocClient.send(new GetCommand(params));
-		console.log("Success:", data.Item);
+		return data.Item;
 	} catch (err) {
 		console.log("Error", err);
 	}
@@ -51,7 +50,7 @@ export const deleteItem = async (TableName, Key) => {
 	const params = { TableName, Key };
 	try {
 		const data = await ddbDocClient.send(new DeleteCommand(params));
-		console.log("Success - item deleted");
+		return data;
 	} catch (err) {
 		console.log("Error", err);
 	}
@@ -65,7 +64,7 @@ export const scanTable = async (TableName, args) => {
 	};
 	try {
 		const data = await ddbDocClient.send(new ScanCommand(params));
-		console.log("success", data.Items);
+		return data.Items;
 	} catch (err) {
 		console.log("Error", err);
 	}
